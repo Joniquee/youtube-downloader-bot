@@ -1,0 +1,8 @@
+node_modules
+.env
+dist
+downloads
+*.db
+*.db-journal
+.next
+.DS_Store
