@@ -233,10 +233,10 @@ async function downloadAndSend(ctx: Context, session: DownloadSession, userId: n
     }
     if (session.selectedType === 'video') {
       fileId = await telegramStorage.uploadVideo(ctx, filePath, `${session.videoInfo.title}`, `${session.selectedFormat.quality}`);
-      await telegramStorage.sendVideoToUser(ctx, user.id, fileId.fileId, `${session.videoInfo.title}\n${session.selectedFormat.quality}`);
+      await telegramStorage.sendVideoToUser(ctx, userId, fileId.fileId, `${session.videoInfo.title}\n${session.selectedFormat.quality}`);
     } else {
       fileId = await telegramStorage.uploadAudio(ctx, filePath, `${session.videoInfo.title}`, `${session.selectedFormat.quality}`);
-      await telegramStorage.sendAudioToUser(ctx, user.id, fileId.fileId, `${session.videoInfo.title}\n${session.selectedFormat.quality}`, `${session.videoInfo.title}`);
+      await telegramStorage.sendAudioToUser(ctx, userId, fileId.fileId, `${session.videoInfo.title}\n${session.selectedFormat.quality}`, `${session.videoInfo.title}`);
     }
 
     if (download) {
