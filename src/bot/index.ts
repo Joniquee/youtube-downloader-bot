@@ -41,16 +41,15 @@ bot.catch((err, ctx) => {
 });
 
 // Запуск бота
-(async () => {
-  try {
-    await bot.launch();
+bot.launch()
+  .then(() => {
     console.log('🤖 Бот успешно запущен!');
     console.log('Ожидание сообщений...');
-  } catch (err) {
+  })
+  .catch((err) => {
     console.error('Ошибка запуска бота:', err);
     process.exit(1);
-  }
-})();
+  });
 
 // Graceful shutdown
 process.once('SIGINT', () => bot.stop('SIGINT'));
