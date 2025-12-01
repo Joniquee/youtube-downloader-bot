@@ -227,14 +227,6 @@ async function downloadAndSend(ctx: Context, session: DownloadSession, userId: n
     const stats = fs.statSync(filePath);
     const fileSizeInMB = stats.size / (1024 * 1024);
 
-    if (fileSizeInMB > 50) {
-      await ctx.editMessageText('❌ Файл слишком большой для отправки через Telegram. Попробуйте другой формат.');
-      youtubeDownloader.cleanupFile(filePath);
-      if (download) {
-        await prisma.download.update({ where: { id: download.id }, data: { status: 'failed', errorMessage: 'File too large' } });
-      }
-      return;
-    }
     let fileId: {
       fileId: string;
       fileSize: number;
