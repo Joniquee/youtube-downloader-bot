@@ -5,7 +5,7 @@
   "main": "dist/bot/index.js",
   "scripts": {
     "bot": "ts-node src/bot/index.ts",
-    "bot:dev": "nodemon --watch 'src/**/*.ts' --exec \"npx ts-node --transpile-only\" src/bot/index.ts",
+    "bot:dev": "nodemon --exec ts-node src/bot/index.ts",
     "build": "tsc",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
