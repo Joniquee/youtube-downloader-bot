@@ -4,6 +4,7 @@ import { youtubeDownloader } from '../../lib/youtube-dl';
 import { createVideoInfoMessage, createFormatSelectionMessage } from '../utils/youtube';
 import { prisma } from '../../lib/prisma';
 import { DownloadSession } from '../../types';
+import { telegramStorage } from '../../lib/telegram-storage';
 import * as fs from 'fs';
 
 // Храним сессии пользователей в памяти
@@ -234,11 +235,16 @@ async function downloadAndSend(ctx: Context, session: DownloadSession, userId: n
       }
       return;
     }
-
+    let fileId: {
+      fileId: string;
+      fileSize: number;
+    }
     if (session.selectedType === 'video') {
-      await ctx.replyWithVideo({ source: filePath }, { caption: `${session.videoInfo.title}\n${session.selectedFormat.quality}` });
+      fileId = await telegramStorage.uploadVideo(ctx, filePath, `${session.videoInfo.title}`, `${session.selectedFormat.quality}`);
+      await telegramStorage.sendVideoToUser(ctx, user.id, fileId.fileId, `${session.videoInfo.title}\n${session.selectedFormat.quality}`);
     } else {
-      await ctx.replyWithAudio({ source: filePath }, { caption: `${session.videoInfo.title}\n${session.selectedFormat.quality}`, title: session.videoInfo.title });
+      fileId = await telegramStorage.uploadAudio(ctx, filePath, `${session.videoInfo.title}`, `${session.selectedFormat.quality}`);
+      await telegramStorage.sendAudioToUser(ctx, user.id, fileId.fileId, `${session.videoInfo.title}\n${session.selectedFormat.quality}`, `${session.videoInfo.title}`);
     }
 
     if (download) {
