@@ -9,7 +9,7 @@ export class YouTubeDownloader {
   private downloadsDir: string;
 
   constructor() {
-    this.downloadsDir = path.join(process.cwd(), 'downloads');
+    this.downloadsDir = path.join(process.cwd(), 'web', 'public', 'downloads');
     if (!fs.existsSync(this.downloadsDir)) {
       fs.mkdirSync(this.downloadsDir, { recursive: true });
     }

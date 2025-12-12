@@ -227,11 +227,23 @@ async function downloadAndSend(ctx: Context, session: DownloadSession, userId: n
     const fileSizeInMB = stats.size / (1024 * 1024);
 
     if (fileSizeInMB > 50) {
-      await ctx.editMessageText('❌ Файл слишком большой для отправки через Telegram. Попробуйте другой формат.');
-      youtubeDownloader.cleanupFile(filePath);
+      const publicUrl = `${process.env.PUBLIC_SERVER_URL}/downloads/${outputName}`;
+      const message = `⚠️ Файл слишком большой для отправки в Telegram (> 50 МБ).\n\n` +
+                      `Скачайте его по прямой ссылке:\n` +
+                      `<a href="${publicUrl}">${publicUrl}</a>\n\n` +
+                      `<i>(Ссылка будет доступна в течение ограниченного времени)</i>`;
+
+      await ctx.editMessageText(message, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } });
+
       if (download) {
-        await prisma.download.update({ where: { id: download.id }, data: { status: 'failed', errorMessage: 'File too large' } });
+        // Помечаем как успешно завершенный, так как ссылка предоставлена
+        await prisma.download.update({ where: { id: download.id }, data: { status: 'completed', completedAt: new Date() } });
       }
+      
+      // НЕ удаляем файл, чтобы пользователь мог его скачать
+      // youtubeDownloader.cleanupFile(filePath); 
+      
+      userSessions.delete(userId);
       return;
     }
 
